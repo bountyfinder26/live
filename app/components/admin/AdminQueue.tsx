@@ -5,6 +5,7 @@ import MessageThread, { type ThreadMessage } from "../dashboard/MessageThread";
 
 export type AdminSubmissionRow = {
   id: string;
+  hackatimeId: string;
   telescreenLink: string;
   codeUrl: string;
   playableUrl: string;
@@ -15,6 +16,8 @@ export type AdminSubmissionRow = {
   approved: boolean;
   reviewStatus: string;
   messages: ThreadMessage[];
+  duplicateRecordIds: string[];
+  duplicateHasApproved: boolean;
 };
 
 const FILTERS = ["Pending", "Approved", "Rejected", "Fraud"] as const;
@@ -28,7 +31,9 @@ export default function AdminQueue({
   filter: Filter;
 }) {
   const [rejectDraft, setRejectDraft] = useState<Record<string, string>>({});
+  const [approveMessageDraft, setApproveMessageDraft] = useState<Record<string, string>>({});
   const [hoursDraft, setHoursDraft] = useState<Record<string, string>>({});
+  const [justificationDraft, setJustificationDraft] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
 
   async function act(
@@ -36,7 +41,12 @@ export default function AdminQueue({
     action: "approve" | "reject" | "fraud" | "hours",
     extra?: Record<string, unknown>,
   ) {
-    const message = action === "reject" ? rejectDraft[recordId]?.trim() : undefined;
+    const message =
+      action === "reject"
+        ? rejectDraft[recordId]?.trim()
+        : action === "approve"
+          ? approveMessageDraft[recordId]?.trim() || undefined
+          : undefined;
     if (action === "reject" && !message) return;
 
     setBusy(recordId);
@@ -75,6 +85,14 @@ export default function AdminQueue({
 
         return (
         <div key={row.id} className="card bg-base-200 p-4 gap-3">
+          {row.duplicateRecordIds.length > 0 && (
+            <div className="alert alert-warning py-2 text-sm">
+              {row.duplicateHasApproved
+                ? "⚠ Code URL already approved on another submission"
+                : "⚠ Duplicate Code URL — shared with another submission"}
+              {" "}({row.duplicateRecordIds.join(", ")})
+            </div>
+          )}
           <div className="flex gap-4 items-start flex-wrap">
             {row.screenshotUrl && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -92,6 +110,7 @@ export default function AdminQueue({
               </a>
               {row.lapseLinks && <p>Lapse: {row.lapseLinks}</p>}
               {row.hackatimeProjects && <p>Project: {row.hackatimeProjects}</p>}
+              {row.hackatimeId && <p>Hackatime ID: {row.hackatimeId}</p>}
               <p className="opacity-60">
                 {row.approved ? "Approved" : row.reviewStatus}
               </p>
@@ -118,16 +137,34 @@ export default function AdminQueue({
             >
               Save hours
             </button>
+            <textarea
+              className="textarea textarea-bordered textarea-sm flex-1 min-w-48"
+              placeholder="Override justification (optional)..."
+              rows={2}
+              value={justificationDraft[row.id] ?? ""}
+              onChange={(e) => setJustificationDraft((d) => ({ ...d, [row.id]: e.target.value }))}
+            />
           </div>
 
           <div className="flex gap-2 flex-wrap items-center">
             <button
               className="btn btn-success btn-sm"
-              disabled={busy === row.id}
-              onClick={() => act(row.id, "approve")}
+              disabled={busy === row.id || !hoursValid}
+              onClick={() =>
+                act(row.id, "approve", {
+                  hours: parsedHours,
+                  justification: justificationDraft[row.id]?.trim() || undefined,
+                })
+              }
             >
               Approve
             </button>
+            <input
+              className="input input-bordered input-sm flex-1 min-w-48"
+              placeholder="Approval message (optional)..."
+              value={approveMessageDraft[row.id] ?? ""}
+              onChange={(e) => setApproveMessageDraft((d) => ({ ...d, [row.id]: e.target.value }))}
+            />
             <input
               className="input input-bordered input-sm flex-1 min-w-48"
               placeholder="Rejection message..."

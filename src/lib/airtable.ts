@@ -20,6 +20,7 @@ export const SUBMISSION_FIELDS = {
   zip: "ZIP / Postal Code",
   birthday: "Birthday",
   overrideHours: "Optional - Override Hours Spent",
+  overrideHoursJustification: "Optional - Override Hours Spent Justification",
   hackatimeId: "Justification - Submitter Hackatime ID",
   hackatimeProjects: "Justification - Hackatime Project Name(s) + Date Range(s)",
   lapseLinks: "Justification - Lapse Links, comma-separated",

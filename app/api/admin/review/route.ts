@@ -64,6 +64,19 @@ export async function POST(request: Request) {
   // message required — distinct from Reject/Fraud which write Review Status.
   if (action === "approve") {
     reviewFields[SUBMISSION_FIELDS.approved] = true;
+
+    // Hours + justification are optional on approve — a reviewer can approve
+    // without touching them, or set the final hours and why in one request.
+    if (body.hours !== undefined) {
+      const hours = Number(body.hours);
+      if (!Number.isFinite(hours) || hours < 0) {
+        return NextResponse.json({ error: "invalid_hours" }, { status: 400 });
+      }
+      reviewFields[SUBMISSION_FIELDS.overrideHours] = Math.round(hours * 10) / 10;
+      reviewFields[SUBMISSION_FIELDS.overrideHoursJustification] = String(
+        body.justification ?? "",
+      ).trim();
+    }
   } else if (action === "reject") {
     reviewFields[SUBMISSION_FIELDS.reviewStatus] = REVIEW_STATUS.rejected;
   } else {
