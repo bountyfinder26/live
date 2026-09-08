@@ -63,10 +63,9 @@ export const allShopItems: ShopItem[] = [
   { name: "Anycubic Kobra 3 Combo", price: 51, img: "/prizes/anycubic.jpg", description: "3d printer + enclosure bundle" },
 
   // ===== 58 HOURS =====
-  { name: "EPOMAKER TH99 PRO Keyboard", price: 58, img: "/prizes/creamy_keyboard.jpg", description: "my favorite keyboard by far." },
+  // EPOMAKER TH99 PRO Keyboard removed (duplicate at price 15)
 
   // ===== 65 HOURS =====
- 
   { name: "Meta Glasses Gen 1", price: 80, img: "/prizes/metaGlasses.jpeg", description: "because meta glasses r cool" },
 
   // ===== 75 HOURS =====
@@ -81,13 +80,13 @@ export const allShopItems: ShopItem[] = [
   { name: "GoPro HERO12 Black", price: 70, img: "/prizes/gopro.jpg", description: "record your adventures?" },
 
   // ===== 133 HOURS =====
-  { name: "Sony WH-1000XM5 Wireless Noise Canceling Headphones (Black)", price: 133, img: "/prizes/headphones.png", description: "rlly nice headphones" },
+  { name: "Sony WH-1000XM5 Wireless Noise Canceling Headphones (Black)", price: 60, img: "/prizes/headphones.png", description: "rlly nice headphones" },
 
   // ===== 200 HOURS =====
   { name: "Gaming PC with a 4060", price: 200, img: "/prizes/gaming_pc_img.webp", description: "1.1k PC grant. some people like prebuilts, others don't. i wont bat an eye as long as its a PC." },
 
   // ===== 300 HOURS =====
-  { name: "300 hours for me to wear a maid dress", price: 300, img: "/prizes/maid_dress.jpg", description: "the ultimate flex" },
+  { name: " wear a maid dress", price: 300, img: "/prizes/maid_dress.jpg", description: "the ultimate flex" },
 ];
 
 export function findShopItemByName(name: string): ShopItem | undefined {
