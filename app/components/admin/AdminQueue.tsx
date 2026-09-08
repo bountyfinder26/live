@@ -11,6 +11,7 @@ export type AdminSubmissionRow = {
   playableUrl: string;
   lapseLinks: string;
   hackatimeProjects: string;
+  description: string;
   hours: number;
   screenshotUrl: string | null;
   approved: boolean;
@@ -111,6 +112,7 @@ export default function AdminQueue({
               {row.lapseLinks && <p>Lapse: {row.lapseLinks}</p>}
               {row.hackatimeProjects && <p>Project: {row.hackatimeProjects}</p>}
               {row.hackatimeId && <p>Hackatime ID: {row.hackatimeId}</p>}
+              {row.description && <p className="max-w-md whitespace-pre-wrap">Description: {row.description}</p>}
               <p className="opacity-60">
                 {row.approved ? "Approved" : row.reviewStatus}
               </p>
